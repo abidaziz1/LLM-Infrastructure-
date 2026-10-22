@@ -91,4 +91,10 @@ window.GLOSSARY = {
   'cuda graph': { t: 'CUDA graph', d: 'A recorded sequence of GPU kernels that can be launched again with a single CPU call.' },
   'shared memory': { t: 'Shared memory', d: 'Fast on-chip memory inside each SM that a kernel manages itself. An H100 SM has up to 228 KB.' },
   'kernel': { t: 'Kernel', d: 'A function that runs on the GPU across many threads at once.' },
+  'flashattention': { t: 'FlashAttention', d: 'An exact attention kernel that works in tiles held in shared memory, so the N × N score matrix never reaches HBM.' },
+  'softmax': { t: 'Softmax', d: 'Turns a row of scores into probabilities that sum to 1, using exponentials.' },
+  'online softmax': { t: 'Online softmax', d: 'Computing softmax in blocks by keeping a running maximum and sum, and rescaling the sum when the maximum grows.' },
+  'causal mask': { t: 'Causal mask', d: 'The rule that token i attends only to tokens up to i, so tile pairs above the diagonal can be skipped.' },
+  'kernel fusion': { t: 'Kernel fusion', d: 'Running several operations in one kernel so intermediate values stay in registers instead of passing through HBM.' },
+  'flash-decoding': { t: 'Flash-Decoding', d: 'A decode kernel that splits the KV cache along its length across SMs and merges the partial results.' },
 };
