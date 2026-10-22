@@ -757,7 +757,7 @@
       '<p class="tally"><span>' + all.length + ' lessons</span><span>' + totalScenes + ' scenes</span><span class="stm' + (gotStars && gotStars === totalStars ? ' full' : '') + '">' + ico('star') + gotStars + ' of ' + totalStars + ' stars</span></p>' +
       sections +
       '<div class="howto">' +
-      '<div><b>Two ways to learn</b>Press <kbd>Next</kbd> and explore each scene yourself, or switch on auto-play and let a lesson run like a video.</div>' +
+      '<div><b>Two ways to learn</b>Press <kbd>Next</kbd> and explore each scene yourself, or switch on auto-play and let a lesson play through on its own.</div>' +
       '<div><b>Look for “Try it”</b>Scenes with a Try it box have a control that changes the picture. Change one thing and watch what moves.</div>' +
       '<div><b>Missions and stars</b>Some scenes set a goal, such as getting a number under a target. Meet it yourself to earn a star. Each quiz scored 80% or better earns one too.</div>' +
       '<div><b>Tap underlined words</b>Dotted underlines open a one-line definition. Keys: <kbd>←</kbd> <kbd>→</kbd> move, <kbd>Space</kbd> pauses, <kbd>R</kbd> replays.</div>' +
