@@ -119,4 +119,7 @@ window.GLOSSARY = {
   'chunked prefill': { t: 'Chunked prefill', d: 'Cutting a long prompt into pieces and running one piece with each decode step, so other users pause for one iteration instead of the whole prefill.' },
   'disaggregation': { t: 'Prefill-decode disaggregation', d: 'Running prefill and decode on separate GPU pools and sending the KV cache between them, so each pool is sized for its own bottleneck.' },
   'cache-aware routing': { t: 'Cache-aware routing', d: 'Sending a request to a replica that already holds its prefix in the KV cache, unless that replica is too busy.' },
+  'speculative decoding': { t: 'Speculative decoding', d: 'A cheap draft proposes several tokens and the target model checks them all in one pass, keeping the longest prefix it agrees with. The output matches the target alone.' },
+  'sparse attention': { t: 'Sparse attention', d: 'Attention where each token reads only a chosen subset of earlier tokens, such as the top 2,048, so cost grows with length times k instead of length squared.' },
+  'sliding window attention': { t: 'Sliding window attention', d: 'Attention where each token sees only the last W tokens. The layer\u2019s KV cache stops growing at W.' },
 };
