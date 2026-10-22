@@ -138,4 +138,7 @@ window.GLOSSARY = {
   'fixed point': { t: 'Fixed point', d: 'A state that one more loop maps to itself. Once the state reaches it, extra loops change nothing.' },
   'spectral radius': { t: 'Spectral radius', d: 'The largest absolute eigenvalue of a matrix. Below 1, repeated use shrinks differences. Above 1, it grows them.' },
   'chain of thought': { t: 'Chain of thought', d: 'Reasoning written out as tokens before the final answer, so each step builds on the text of the one before.' },
+  'reward model': { t: 'Reward model', d: 'A model trained on human choices between pairs of answers. It scores an answer, and the chatbot is then trained to raise that score.' },
+  'kl penalty': { t: 'KL penalty', d: 'A term subtracted from the reward in proportion to how far the policy has drifted from its starting model. It limits how hard the policy can push on a flawed reward.' },
+  'specification gaming': { t: 'Specification gaming', d: 'Earning reward through a loophole in how the goal was written, instead of doing what was meant.' },
 };
