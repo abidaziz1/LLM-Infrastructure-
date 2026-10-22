@@ -122,7 +122,7 @@
     mount(c) {
       const ch = kit.chart({ x: 52, y: 26, w: 336, h: 124, xmin: 1e9, xmax: 1e12, ymin: 1e11, ymax: 1e14, xlog: true, ylog: true, xt: [1e9, 1e10, 1e11, 1e12], xf: bil, yt: [1e11, 1e12, 1e13, 1e14], yf: bil, xlabel: 'Parameters', ylabel: 'Training tokens' });
       const ln = (k, cls) => { const n0 = Math.max(1e9, 1e11 / k), n1 = Math.min(1e12, 1e14 / k); return `<line class="ln ${cls}" x1="${ch.X(n0).toFixed(1)}" x2="${ch.X(n1).toFixed(1)}" y1="${ch.Y(n0 * k).toFixed(1)}" y2="${ch.Y(n1 * k).toFixed(1)}"/>`; };
-      const f = c.fig(420, 214, ch.svg + ln(20, 'dash') + ln(200, 'dash') + '<g id="g"></g>');
+      const f = c.fig(420, 226, ch.svg + ln(20, 'dash') + ln(200, 'dash') + '<g id="g"></g>');
       c.legend([['bad', 'Under 10 tokens per parameter'], ['ok', '10 to 100'], ['mem', 'Over 100']]);
       const st = c.stats([{ k: 'r', label: 'Tokens per parameter', value: '', cls: 'cmp' }, { k: 'g', label: 'Regime', value: '', cls: 'ctl' }, { k: 'c', label: 'Training compute, 6ND', value: '', cls: 'mem' }]);
       let key = 'gpt3';
@@ -130,7 +130,7 @@
       function draw() {
         let g = ''; MODELS.forEach(m => { const r = m.D / m.N, sel = m.k === key; g += `<circle cx="${ch.X(m.N).toFixed(1)}" cy="${ch.Y(m.D).toFixed(1)}" r="${sel ? 7 : 4.5}" class="${reg(r)[0]}" style="stroke:${sel ? 'var(--ink)' : 'var(--stage)'};stroke-width:${sel ? 2.4 : 1.5}"/>`; });
         const m = MODELS.find(q => q.k === key), x = ch.X(m.N), tx = Math.min(Math.max(x, ch.x0 + 40), ch.x1 - 40);
-        g += `<text class="xs b" x="${tx.toFixed(1)}" y="${(ch.Y(m.D) - 11).toFixed(1)}" text-anchor="middle">${m.name}</text><text class="xs mute" x="16" y="186">Dashed lines: 20 and 200 tokens per parameter.</text><text class="xs mute" x="16" y="202">Published counts. Llama 3.1 405B: about 15T tokens.</text>`;
+        g += `<text class="xs b" x="${tx.toFixed(1)}" y="${(ch.Y(m.D) - 11).toFixed(1)}" text-anchor="middle">${m.name}</text><text class="xs mute" x="16" y="202">Dashed lines: 20 and 200 tokens per parameter.</text><text class="xs mute" x="16" y="218">Published counts. Llama 3.1 405B: about 15T tokens.</text>`;
         f.q('#g').innerHTML = g;
         const r = m.D / m.N;
         st.set('r', fmt.n(r, r < 10 ? 1 : 0), bil(m.D) + ' tokens ÷ ' + bil(m.N)); st.set('g', reg(r)[1], r > 1000 ? 'far past 20 per parameter' : r > 100 ? 'past 20 per parameter' : r >= 10 ? 'around the rule of thumb' : 'too few tokens'); st.set('c', kit.sci(6 * m.N * m.D, 1) + ' FLOPs', '6 × ' + bil(m.N) + ' × ' + bil(m.D));
