@@ -115,4 +115,8 @@ window.GLOSSARY = {
   'all-to-all': { t: 'All-to-all', d: 'A collective where every GPU sends a different piece of data to every other GPU. Expert parallelism uses it to route tokens to experts and back.' },
   'expert': { t: 'Expert', d: 'One of many parallel feed-forward blocks in a mixture-of-experts layer. Each token uses only a few of them.' },
   'router': { t: 'Router', d: 'A small network that scores every expert for a token and picks the top few. Their outputs are combined using the scores.' },
+  'continuous batching': { t: 'Continuous batching', d: 'Scheduling at every decode step: a finished request frees its slot and a waiting one takes it at the next step, instead of waiting for the whole batch.' },
+  'chunked prefill': { t: 'Chunked prefill', d: 'Cutting a long prompt into pieces and running one piece with each decode step, so other users pause for one iteration instead of the whole prefill.' },
+  'disaggregation': { t: 'Prefill-decode disaggregation', d: 'Running prefill and decode on separate GPU pools and sending the KV cache between them, so each pool is sized for its own bottleneck.' },
+  'cache-aware routing': { t: 'Cache-aware routing', d: 'Sending a request to a replica that already holds its prefix in the KV cache, unless that replica is too busy.' },
 };
