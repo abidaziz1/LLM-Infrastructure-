@@ -125,4 +125,8 @@ window.GLOSSARY = {
   'api gateway': { t: 'API gateway', d: 'The front door of a model service. It checks credentials and rate limits, validates the request and passes it on to the router.' },
   'scale-up domain': { t: 'Scale-up domain', d: 'A set of GPUs joined by a fast fabric such as NVLink, so each can exchange data with any other directly. A rack like NVL72 forms one with 72 GPUs.' },
   'hot spare': { t: 'Hot spare', d: 'An extra GPU kept powered and ready, so one failure can be covered without stopping the group.' },
+  'power law': { t: 'Power law', d: 'A relationship y = a × x^k. On log-log axes it is a straight line whose slope is k.' },
+  'scaling law': { t: 'Scaling law', d: 'A fitted formula that predicts a model\u2019s loss from its compute, parameters and training tokens.' },
+  'compute-optimal': { t: 'Compute-optimal', d: 'The model size and token count that reach a given loss with the least training compute.' },
+  'epoch': { t: 'Epoch', d: 'One full pass over the training data.' },
 };
