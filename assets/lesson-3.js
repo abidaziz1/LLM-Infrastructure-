@@ -772,7 +772,7 @@
     '<text x="24" y="28" style="font:600 11px var(--font-mono);fill:var(--ink-3)">request 1</text><text x="24" y="126" style="font:600 11px var(--font-mono);fill:var(--ink-3)">request 2: same start, reused</text></svg>';
 
   window.LESSONS.push({
-    id: 'caching', n: 3,
+    id: 'caching', n: 3, track: 'agents', order: 2,
     title: 'Prompt Caching',
     tagline: 'Why the same prompt should be paid for once, and what quietly breaks the saving.',
     preview,

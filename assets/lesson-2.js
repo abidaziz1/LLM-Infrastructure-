@@ -723,7 +723,7 @@
 
   const preview = '<svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice"><g style="fill:none;stroke-width:2"><circle cx="160" cy="75" r="38" style="stroke:var(--line)"/></g><g class="orbit"><circle cx="160" cy="37" r="9" style="fill:var(--data)"/></g><rect x="108" y="58" width="104" height="34" rx="10" style="fill:var(--ctl-soft);stroke:var(--ctl);stroke-width:1.5"/><text x="160" y="80" text-anchor="middle" style="font:700 12px var(--font-mono);fill:var(--ink)">while True</text></svg>';
   window.LESSONS.push({
-    id: 'agent', n: 2,
+    id: 'agent', n: 2, track: 'agents', order: 1,
     title: 'How an AI Agent Works',
     tagline: 'The while loop, the tools, the permissions and the context window behind Claude Code.',
     preview,

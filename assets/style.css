@@ -146,7 +146,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .hub h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(36px, 7vw, 68px); line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 16px; max-width: 15ch; text-wrap: balance; }
 .hub .lede { font-size: clamp(18px, 2.4vw, 22px); color: var(--ink-2); max-width: 48ch; margin: 0 0 clamp(24px, 4vw, 40px); }
 .eyebrow-s { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 14px; }
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
 .cards > li { display: grid; }
 .card { display: grid; grid-template-rows: auto 1fr; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); text-decoration: none; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.15s, border-color 0.15s; min-width: 0; }
 .card:hover { transform: translateY(-2px); border-color: var(--ctl); }
@@ -154,7 +154,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .card .pv svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .card .tx { padding: 16px 18px 18px; display: grid; gap: 8px; align-content: start; grid-template-rows: auto auto 1fr auto auto auto; }
 .card .num { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-3); text-transform: uppercase; }
-.card h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.card h3 { font-family: var(--font-display); font-weight: 700; font-size: 22px; line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
 .card p { margin: 0; color: var(--ink-2); font-size: 16px; }
 .card .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
 .card .prog { height: 6px; border-radius: 3px; background: var(--well); overflow: hidden; margin-top: 6px; }
@@ -578,3 +578,33 @@ kbd { font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--li
 @media (max-width: 460px) { .ret { grid-template-columns: 1fr; } }
 
 .sv text.halo { paint-order: stroke; stroke: var(--stage); stroke-width: 5px; stroke-linejoin: round; }
+
+/* ---------- tracks, stars and missions ---------- */
+.tally { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 clamp(20px, 3vw, 32px); font-family: var(--font-mono); font-size: 13px; color: var(--ink-3); }
+.tally span, .stm { display: inline-flex; align-items: center; gap: 5px; }
+.stm svg, .starchip svg, .starline svg, .sk svg { width: 14px; height: 14px; }
+.stm svg { color: var(--ink-3); } .stm.full svg { color: var(--y4); fill: var(--y4); } .stm.full { color: var(--ink); }
+.track { margin-top: clamp(24px, 4vw, 40px); }
+.track .trh { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; margin-bottom: 12px; }
+.track .trh h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+.track .trh p { margin: 0; color: var(--ink-3); font-size: 15.5px; max-width: 60ch; }
+.starchip { display: inline-flex; align-items: center; gap: 4px; padding: 0 10px; height: 32px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); }
+.starchip[hidden] { display: none; } .starchip b { color: var(--ink); } .starchip svg { color: var(--ink-3); }
+.starchip.full svg { color: var(--y4); fill: var(--y4); }
+.mission { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1.5px dashed var(--ctl); border-radius: 14px; background: var(--ctl-soft); transition: background .25s, border-color .25s; }
+.mission .mi { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--ctl); color: var(--on-accent); }
+.mission .mi svg { width: 17px; height: 17px; }
+.mission .mt { display: grid; gap: 1px; min-width: 0; }
+.mission .mt b { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ctl); font-weight: 600; }
+.mission .mt span:not(.sr) { font-weight: 700; font-size: 15px; line-height: 1.3; }
+.mission .ms { color: var(--ink-3); } .mission .ms svg { width: 26px; height: 26px; }
+.mission.met { border-style: solid; border-color: var(--ok); background: var(--ok-soft); }
+.mission.met .mi { background: var(--ok); color: var(--on-ok); }
+.mission.cleared .ms { color: var(--y4); } .mission.cleared .ms svg { fill: var(--y4); }
+.mission.pulse .ms svg { animation: starpop .9s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes starpop { 0% { transform: scale(.4) rotate(-40deg); } 60% { transform: scale(1.5) rotate(12deg); } 100% { transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .mission.pulse .ms svg { animation: none; } }
+.starline { display: flex; align-items: center; gap: 8px; color: var(--ink-3); margin: 6px 0 0; } .starline svg { width: 20px; height: 20px; }
+.starline.on { color: var(--ink); } .starline.on svg { color: var(--y4); fill: var(--y4); }
+.sheet li button .sk { display: inline-grid; place-items: center; color: var(--ink-3); } .sheet li button .sk svg { width: 16px; height: 16px; }
+.sheet li button .sk.won { color: var(--y4); } .sheet li button .sk.won svg { fill: var(--y4); }

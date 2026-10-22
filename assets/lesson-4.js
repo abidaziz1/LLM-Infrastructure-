@@ -810,7 +810,7 @@
   const preview = '<svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice"><rect x="24" y="66" width="272" height="26" rx="8" style="fill:var(--mem-soft);stroke:var(--mem);stroke-width:1.5"/><rect x="24" y="66" width="3" height="26" rx="1.5" style="fill:var(--cmp)"/><g class="slide"><rect x="34" y="72" width="14" height="14" rx="3" style="fill:var(--mem)"/></g><text x="24" y="54" style="font:600 11px var(--font-mono);fill:var(--ink-3)">one token: 30 ms</text><text x="24" y="114" style="font:600 11px var(--font-mono);fill:var(--ink-3)">math: 0.1 ms</text></svg>';
 
   window.LESSONS.push({
-    id: 'inference', n: 4,
+    id: 'inference', n: 4, track: 'inference', order: 1,
     title: 'Why a Token Takes 30 ms',
     tagline: 'Compute, memory bandwidth, and the two phases behind every LLM request.',
     preview,

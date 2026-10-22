@@ -94,7 +94,9 @@
     x: '<path d="M6 6l12 12M18 6L6 18"/>',
     close: '<path d="M6 6l12 12M18 6L6 18"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>',
-    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>'
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    star: '<path d="M12 3.4l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6-4.4-4.2 6-.8z"/>',
+    target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12h.01"/>'
   };
   function ico(name) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>'; }
 
@@ -419,19 +421,58 @@
       var best = store.get('q:' + lesson.id, 0);
       if (score > best) store.set('q:' + lesson.id, score);
       store.set('done:' + lesson.id, true);
+      var earned = score * 5 >= qs.length * 4;
+      if (earned) awardStar(c.player, c.player.idx);
       box.innerHTML = '';
       var msg = score === qs.length ? 'Every answer right. You can explain this lesson to someone else.' : score >= qs.length - 1 ? 'Close to perfect. Review the scene behind the question you missed.' : 'Worth another pass. Use the scene list to jump back to the parts you missed.';
-      var res = h('div', { class: 'res' }, h('div', { class: 'qn', text: 'Result' }), h('div', { class: 'score', text: score + ' / ' + qs.length }), h('p', { text: msg }));
+      var res = h('div', { class: 'res' }, h('div', { class: 'qn', text: 'Result' }), h('div', { class: 'score', text: score + ' / ' + qs.length }), h('p', { text: msg }), h('p', { class: 'starline' + (earned ? ' on' : ''), html: ico('star') + '<span>' + (earned ? 'Star earned for this lesson.' : 'Score at least 80% to earn this lesson\u2019s quiz star.') + '</span>' }));
       var row = h('div', { class: 'row' });
       var again = h('button', { type: 'button', class: 'btn' }, 'Try again');
       c.on(again, 'click', function () { i = 0; score = 0; wrong = []; ask(); });
       row.append(again);
-      var nextL = (window.LESSONS || []).filter(function (l) { return l.n === lesson.n + 1; })[0];
+      var ord = orderedLessons(), at = ord.indexOf(lesson), nextL = at >= 0 ? ord[at + 1] : null;
       if (nextL) row.append(h('a', { class: 'btn pri', href: '#lesson-' + nextL.n }, 'Next: ' + nextL.title));
       row.append(h('a', { class: 'btn', href: '#' }, 'All lessons'));
       res.append(row); box.append(res);
     }
     ask();
+  }
+
+
+  /* -------------------------------------------------------------- missions */
+  /* A scene may declare mission: 'Goal text'. The scene calls c.mission.set(true) when the goal is met.
+     The first time that happens during hands-on play, the scene earns a star. Auto-play shows the goal being met but earns nothing. */
+  function starKey(L) { return 's:' + L.id; }
+  function starTotal(L) { return L.scenes.filter(function (sc) { return sc.mission || sc.quiz; }).length; }
+  function starCount(L) { return Math.min(starTotal(L), store.get(starKey(L), []).length); }
+  function awardStar(p, idx) {
+    var arr = store.get(starKey(p.lesson), []);
+    if (arr.indexOf(idx) < 0) { arr.push(idx); store.set(starKey(p.lesson), arr); }
+    p.updateStars();
+  }
+  function makeMission(p, c, d) {
+    var m = typeof d.mission === 'string' ? { goal: d.mission } : d.mission;
+    var had = store.get(starKey(p.lesson), []).indexOf(p.idx) >= 0;
+    var state = h('span', { class: 'sr', text: had ? 'Mission cleared earlier.' : 'Mission not met yet.' });
+    var el = h('div', { class: 'mission' + (had ? ' cleared' : ''), role: 'status' },
+      h('span', { class: 'mi', html: ico('target') }),
+      h('div', { class: 'mt' }, h('b', { text: m.title || 'Mission' }), h('span', { text: m.goal }), state),
+      h('span', { class: 'ms', html: ico('star'), title: 'Star' }));
+    c.ctrl.append(el);
+    var api = {
+      el: el, cleared: had, met: false,
+      set: function (ok) {
+        ok = !!ok;
+        if (ok !== api.met) { api.met = ok; el.classList.toggle('met', ok); }
+        if (ok && !api.cleared && (c.touched || p.auto)) {
+          api.cleared = true; el.classList.add('cleared', 'pulse'); state.textContent = 'Mission cleared. Star earned.';
+          setTimeout(function () { el.classList.remove('pulse'); }, 1200);
+          if (!p.auto) awardStar(p, p.idx);
+        } else if (ok) state.textContent = 'Mission met.';
+        else if (!api.cleared) state.textContent = 'Mission not met yet.';
+      }
+    };
+    return api;
   }
 
   /* -------------------------------------------------------------- player */
@@ -444,7 +485,7 @@
       '<header class="topbar"><div class="wrap bar">' +
       '<a class="back" href="#">' + ico('prev') + '<span>All lessons</span></a>' +
       '<div class="ltitle"><span class="lnum" id="pNum"></span><span class="lname" id="pName"></span></div>' +
-      '<div class="acts"><button type="button" class="ibtn" id="pMenu" aria-label="Scene list and settings" aria-haspopup="dialog">' + ico('list') + '</button></div>' +
+      '<div class="acts"><span class="starchip" id="pStars" hidden title="Stars earned in this lesson"></span><button type="button" class="ibtn" id="pMenu" aria-label="Scene list and settings" aria-haspopup="dialog">' + ico('list') + '</button></div>' +
       '</div></header>' +
       '<main class="wrap player">' +
       '<nav class="rail" id="pRail" aria-label="Lesson progress"></nav>' +
@@ -471,7 +512,7 @@
       root: root, lesson: null, idx: 0, ctx: null, auto: false, autoT: null, popFor: null,
       el: {}, speeds: [1, 0.5, 2], si: 0
     };
-    ['pNum', 'pName', 'pRail', 'pEye', 'pTitle', 'pCap', 'pHint', 'pTake', 'pStage', 'pCtrl', 'pBar', 'pPrev', 'pPlay', 'pReplay', 'pAuto', 'pSpeed', 'pNext', 'pMenu'].forEach(function (id) { p.el[id] = $('#' + id, root); });
+    ['pNum', 'pName', 'pStars', 'pRail', 'pEye', 'pTitle', 'pCap', 'pHint', 'pTake', 'pStage', 'pCtrl', 'pBar', 'pPrev', 'pPlay', 'pReplay', 'pAuto', 'pSpeed', 'pNext', 'pMenu'].forEach(function (id) { p.el[id] = $('#' + id, root); });
 
     p.setPaused = function (v) {
       clock.paused = v; root.classList.toggle('is-paused', v);
@@ -491,7 +532,7 @@
       var d = p.lesson.scenes[p.idx];
       if (d.quiz) return;
       var words = ((d.title || '') + ' ' + (d.text || '') + ' ' + (d.takeaway || '')).split(/\s+/).length;
-      var ms = Math.max(4200, 1800 + words * 230) * (d.hint ? 1.5 : 1) * (d.slow || 1);
+      var ms = Math.max(4200, 1800 + words * 230) * (d.hint ? 1.5 : 1) * (d.mission ? 1.5 : 1) * (d.slow || 1);
       p.autoT = clock.after(ms, function () { p.autoT = null; if (p.auto) p.next(); });
     };
     p.sceneDone = function (c) {
@@ -502,6 +543,11 @@
       p.markSeen();
       p.armAuto();
     };
+    p.updateStars = function () {
+      var L = p.lesson; if (!L) return;
+      var tot = starTotal(L); p.el.pStars.hidden = !tot;
+      if (tot) { var n = starCount(L); p.el.pStars.innerHTML = ico('star') + '<span><b>' + n + '</b>/' + tot + '</span>'; p.el.pStars.classList.toggle('full', n === tot); p.el.pStars.setAttribute('aria-label', n + ' of ' + tot + ' stars earned'); }
+    };
     p.next = function () { if (p.idx < p.lesson.scenes.length - 1) p.go(p.idx + 1); };
     p.prev = function () { if (p.idx > 0) p.go(p.idx - 1); };
     p.layerOf = function (d) { return d.layer == null ? null : d.layer; };
@@ -511,7 +557,7 @@
       p.el.pNum.textContent = 'Lesson ' + lesson.n;
       p.el.pName.textContent = lesson.title;
       document.title = lesson.title + ' | LLM Infrastructure Animated';
-      p.buildRail();
+      p.buildRail(); p.updateStars();
       p.go(clamp(idx || 0, 0, lesson.scenes.length - 1), true);
     };
 
@@ -569,6 +615,7 @@
       var c = new Ctx(p, d, p.el.pStage, p.el.pCtrl);
       p.ctx = c;
       try {
+        if (d.mission) c.mission = makeMission(p, c, d);
         if (d.quiz) mountQuiz(c, d.quiz, L);
         else { var r = d.mount(c); if (typeof r === 'function') c.cleanup(r); }
       } catch (err) {
@@ -590,11 +637,12 @@
     };
     p.openSheet = function () {
       p.closeSheet();
-      var L = p.lesson, v = store.get('v:' + L.id, []);
+      var L = p.lesson, v = store.get('v:' + L.id, []), stars = store.get(starKey(L), []);
       var shade = h('div', { class: 'shade', id: 'shade' });
       var list = h('ol');
       L.scenes.forEach(function (sc, i) {
-        var b = h('button', { type: 'button', 'aria-current': String(i === p.idx) }, h('span', { class: 'n', text: String(i + 1).padStart(2, '0') }), h('span', { text: sc.title }), v.indexOf(i) >= 0 ? h('span', { class: 'ck', html: ico('check') }) : h('span'));
+        var won = stars.indexOf(i) >= 0;
+        var b = h('button', { type: 'button', 'aria-current': String(i === p.idx) }, h('span', { class: 'n', text: String(i + 1).padStart(2, '0') }), h('span', { text: sc.title }), sc.mission || sc.quiz ? h('span', { class: 'sk' + (won ? ' won' : ''), html: ico(won ? 'star' : 'target'), title: won ? 'Star earned' : 'Mission' }) : v.indexOf(i) >= 0 ? h('span', { class: 'ck', html: ico('check') }) : h('span'));
         b.addEventListener('click', function () { p.closeSheet(); p.go(i); });
         list.append(h('li', null, b));
       });
@@ -660,31 +708,59 @@
   }
 
   /* ----------------------------------------------------------------- hub */
+  var TRACKS = [
+    { id: 'start', title: 'Start here', blurb: 'Follow one question from your keyboard down to single electrons and back.' },
+    { id: 'agents', title: 'Agents and caching', blurb: 'How a coding agent loops, and why a repeated prompt should be paid for once.' },
+    { id: 'inference', title: 'Inference engineering', blurb: 'Why a token takes 30 ms, and every trick that makes serving faster, cheaper and bigger.' },
+    { id: 'vision', title: 'Images and video', blurb: 'How models see, draw and film.' },
+    { id: 'training', title: 'Training', blurb: 'How huge models are trained, how far scaling goes, and how code models learn from tests.' },
+    { id: 'frontier', title: 'Frontier and safety', blurb: 'Thinking without words, aligning goals, and what happened when agents left their sandbox.' }
+  ];
+  function orderedLessons() {
+    var out = [];
+    TRACKS.forEach(function (T) {
+      LESSONS().filter(function (L) { return (L.track || 'start') === T.id; }).sort(function (a, b) { return (a.order || a.n) - (b.order || b.n); }).forEach(function (L) { out.push(L); });
+    });
+    LESSONS().forEach(function (L) { if (out.indexOf(L) < 0) out.push(L); });
+    return out;
+  }
   function renderHub(el) {
-    var cards = LESSONS().map(function (L) {
+    var all = orderedLessons(), totalScenes = 0, totalStars = 0, gotStars = 0;
+    function card(L) {
       var v = store.get('v:' + L.id, []), n = L.scenes.length, done = store.get('done:' + L.id, false);
       var pct = Math.round(Math.min(1, v.length / n) * 100);
       var last = store.get('last:' + L.id, 0);
       var href = '#lesson-' + L.n + (v.length && !done && last > 0 ? '-' + (last + 1) : '');
       var label = done ? 'Review lesson' : v.length ? 'Continue' : 'Start lesson';
       var interactive = L.scenes.filter(function (sc) { return sc.hint; }).length;
+      var st = starTotal(L), sc = starCount(L);
+      totalScenes += n; totalStars += st; gotStars += sc;
       return '<li><a class="card" href="' + href + '"><div class="pv" aria-hidden="true">' + (L.preview || '') + '</div><div class="tx">' +
-        '<span class="num">Lesson ' + L.n + '</span><h2>' + esc(L.title) + '</h2><p>' + esc(L.tagline) + '</p>' +
-        '<div class="meta"><span>' + n + ' scenes</span><span>' + interactive + ' to try</span><span>about ' + Math.max(5, Math.round(n * 0.65)) + ' min</span></div>' +
+        '<span class="num">Lesson ' + L.n + '</span><h3>' + esc(L.title) + '</h3><p>' + esc(L.tagline) + '</p>' +
+        '<div class="meta"><span>' + n + ' scenes</span><span>' + interactive + ' to try</span><span>about ' + Math.max(5, Math.round(n * 0.65)) + ' min</span>' + (st ? '<span class="stm' + (sc === st ? ' full' : '') + '">' + ico('star') + sc + '/' + st + '</span>' : '') + '</div>' +
         '<div class="prog" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>' +
         '<span class="go">' + label + ico('arrow') + '</span></div></a></li>';
+    }
+    var sections = TRACKS.map(function (T) {
+      var ls = all.filter(function (L) { return (L.track || 'start') === T.id; });
+      if (!ls.length) return '';
+      return '<section class="track" aria-labelledby="tr-' + T.id + '"><div class="trh"><h2 id="tr-' + T.id + '">' + esc(T.title) + '</h2><p>' + esc(T.blurb) + '</p></div><ul class="cards">' + ls.map(card).join('') + '</ul></section>';
     }).join('');
+    var spare = all.filter(function (L) { return !TRACKS.some(function (T) { return T.id === (L.track || 'start'); }); });
+    if (spare.length) sections += '<section class="track"><div class="trh"><h2>More lessons</h2></div><ul class="cards">' + spare.map(card).join('') + '</ul></section>';
+    var words = { 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen', 19: 'Nineteen', 20: 'Twenty' };
     el.innerHTML =
       '<div class="wrap hub">' +
       '<p class="eyebrow-s">LLM infrastructure, animated</p>' +
-      '<h1>Watch how an AI answer gets made</h1>' +
-      '<p class="lede">Four short lessons. Every idea is a moving picture you can slow down, replay and poke with a slider or a button. No background needed.</p>' +
-      '<ul class="cards">' + cards + '</ul>' +
+      '<h1>See how AI works, one animation at a time</h1>' +
+      '<p class="lede">' + (words[all.length] || all.length) + ' short lessons. Every idea is a moving picture you can slow down, replay and poke with a slider or a button. Clear missions to earn stars. No background needed.</p>' +
+      '<p class="tally"><span>' + all.length + ' lessons</span><span>' + totalScenes + ' scenes</span><span class="stm' + (gotStars && gotStars === totalStars ? ' full' : '') + '">' + ico('star') + gotStars + ' of ' + totalStars + ' stars</span></p>' +
+      sections +
       '<div class="howto">' +
       '<div><b>Two ways to learn</b>Press <kbd>Next</kbd> and explore each scene yourself, or switch on auto-play and let a lesson run like a video.</div>' +
       '<div><b>Look for “Try it”</b>Scenes with a Try it box have a control that changes the picture. Change one thing and watch what moves.</div>' +
+      '<div><b>Missions and stars</b>Some scenes set a goal, such as getting a number under a target. Meet it yourself to earn a star. Each quiz scored 80% or better earns one too.</div>' +
       '<div><b>Tap underlined words</b>Dotted underlines open a one-line definition. Keys: <kbd>←</kbd> <kbd>→</kbd> move, <kbd>Space</kbd> pauses, <kbd>R</kbd> replays.</div>' +
-      '<div><b>Suggested order</b>Lessons stand alone. If the caching lesson feels fast, take lesson 4 first: it builds the prefill, decode and KV cache ideas from scratch.</div>' +
       '</div></div>';
   }
 
@@ -721,7 +797,7 @@
   window.addEventListener('error', function (e) { errors.push(String(e.message)); });
   window.addEventListener('unhandledrejection', function (e) { errors.push(String(e.reason && e.reason.message || e.reason)); });
 
-  window.LLMI = { clock: clock, ease: ease, fmt: fmt, h: h, s: s, md: md, ico: ico, $: $, $$: $$, esc: esc, errors: errors, store: store, place: place,
+  window.LLMI = { starCount: starCount, starTotal: starTotal, orderedLessons: orderedLessons, clock: clock, ease: ease, fmt: fmt, h: h, s: s, md: md, ico: ico, $: $, $$: $$, esc: esc, errors: errors, store: store, place: place,
     get player() { return player; }, route: route,
     goto: function (n, i) { location.hash = '#lesson-' + n + '-' + ((i || 0) + 1); route(); },
     state: function () { return { lesson: player && player.lesson && player.lesson.n, idx: player && player.idx, done: player && player.ctx && player.ctx.finished, stage: player && player.el.pStage.dataset.state }; } };

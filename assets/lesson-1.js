@@ -1015,7 +1015,7 @@
 
   const preview = '<svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice">' + Array.from({ length: 9 }, (_, i) => `<rect class="${['a', 'b', 'c'][i % 3]}" x="${60 + i * 6}" y="${14 + i * 13}" width="${200 - i * 12}" height="9" rx="4.5" style="fill:${i < 3 ? 'var(--data-soft)' : i < 6 ? 'var(--mem-soft)' : 'var(--cmp-soft)'};stroke:${i < 3 ? 'var(--data)' : i < 6 ? 'var(--mem)' : 'var(--cmp)'};stroke-width:1"/>`).join('') + '<circle class="orbit" cx="160" cy="75" r="0" style="fill:none"/></svg>';
   window.LESSONS.push({
-    id: 'journey', n: 1,
+    id: 'journey', n: 1, track: 'start', order: 1,
     title: 'One Question, 18 Layers',
     tagline: 'Follow one keypress down through 18 layers until you reach single electrons.',
     preview,
