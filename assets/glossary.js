@@ -85,4 +85,10 @@ window.GLOSSARY = {
   'nvlink': { t: 'NVLink', d: 'The fast link between GPUs inside a node. An H100 gets 450 GB/s in each direction.' },
   'infiniband': { t: 'InfiniBand', d: 'The network between nodes. A current link carries about 50 GB/s.' },
   'mfu': { t: 'Utilization (MFU)', d: 'Model FLOPs utilization: the share of a chip\u2019s peak speed that goes to useful training math.' },
+  'tensor core': { t: 'Tensor core', d: 'A unit inside an SM that multiplies a small block of a matrix in one instruction.' },
+  'warp divergence': { t: 'Warp divergence', d: 'When lanes of one warp take different branches, the warp runs both paths one after the other.' },
+  'coalesced': { t: 'Coalesced access', d: 'Neighboring lanes reading neighboring addresses, so the memory system serves the whole warp with few requests.' },
+  'cuda graph': { t: 'CUDA graph', d: 'A recorded sequence of GPU kernels that can be launched again with a single CPU call.' },
+  'shared memory': { t: 'Shared memory', d: 'Fast on-chip memory inside each SM that a kernel manages itself. An H100 SM has up to 228 KB.' },
+  'kernel': { t: 'Kernel', d: 'A function that runs on the GPU across many threads at once.' },
 };
