@@ -134,4 +134,8 @@ window.GLOSSARY = {
   'verifiable reward': { t: 'Verifiable reward', d: 'A reward a program can check, such as unit tests passing or a math answer matching. It needs no human rater and no learned judge.' },
   'reward hacking': { t: 'Reward hacking', d: 'The policy finds a way to earn reward without doing the intended task, such as hard-coding the answers a test expects. It happens when the check is weaker than the goal.' },
   'pass@k': { t: 'pass@k', d: 'The share of problems solved when you may sample k answers per problem. For a problem solved with chance p per sample it is 1 \u2212 (1 \u2212 p)^k.' },
+  'hidden state': { t: 'Hidden state', d: 'The vector of numbers a model holds for a token as it moves through the layers. Huginn\u2019s is 5,280 numbers long.' },
+  'fixed point': { t: 'Fixed point', d: 'A state that one more loop maps to itself. Once the state reaches it, extra loops change nothing.' },
+  'spectral radius': { t: 'Spectral radius', d: 'The largest absolute eigenvalue of a matrix. Below 1, repeated use shrinks differences. Above 1, it grows them.' },
+  'chain of thought': { t: 'Chain of thought', d: 'Reasoning written out as tokens before the final answer, so each step builds on the text of the one before.' },
 };
