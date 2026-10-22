@@ -110,4 +110,7 @@ window.GLOSSARY = {
   'nvfp4': { t: 'NVFP4', d: 'A 4-bit format from NVIDIA: FP4 values in blocks of 16 that share an FP8 (E4M3) scale, plus one FP32 scale per tensor. That is 4.5 bits per value.' },
   'w4a16': { t: 'W4A16', d: 'Weights in 4 bits, activations in 16 bits. Weights are read in 4 bits and converted to 16 bits before the math.' },
   'w8a8': { t: 'W8A8', d: 'Weights and activations both in 8 bits, so the matrix multiply runs on 8-bit tensor cores. On an H100 that is twice the BF16 rate.' },
+  'expert parallelism': { t: 'Expert parallelism', d: 'Putting different experts of a mixture-of-experts model on different GPUs. Tokens travel to their experts and back.' },
+  'replica': { t: 'Replica', d: 'A full copy of the model serving its own share of the requests. Replicas need no communication with each other.' },
+  'all-to-all': { t: 'All-to-all', d: 'A collective where every GPU sends a different piece of data to every other GPU. Expert parallelism uses it to route tokens to experts and back.' },
 };
