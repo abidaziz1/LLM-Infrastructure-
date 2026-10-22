@@ -122,4 +122,7 @@ window.GLOSSARY = {
   'speculative decoding': { t: 'Speculative decoding', d: 'A cheap draft proposes several tokens and the target model checks them all in one pass, keeping the longest prefix it agrees with. The output matches the target alone.' },
   'sparse attention': { t: 'Sparse attention', d: 'Attention where each token reads only a chosen subset of earlier tokens, such as the top 2,048, so cost grows with length times k instead of length squared.' },
   'sliding window attention': { t: 'Sliding window attention', d: 'Attention where each token sees only the last W tokens. The layer\u2019s KV cache stops growing at W.' },
+  'api gateway': { t: 'API gateway', d: 'The front door of a model service. It checks credentials and rate limits, validates the request and passes it on to the router.' },
+  'scale-up domain': { t: 'Scale-up domain', d: 'A set of GPUs joined by a fast fabric such as NVLink, so each can exchange data with any other directly. A rack like NVL72 forms one with 72 GPUs.' },
+  'hot spare': { t: 'Hot spare', d: 'An extra GPU kept powered and ready, so one failure can be covered without stopping the group.' },
 };
