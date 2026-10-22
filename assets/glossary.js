@@ -113,4 +113,6 @@ window.GLOSSARY = {
   'expert parallelism': { t: 'Expert parallelism', d: 'Putting different experts of a mixture-of-experts model on different GPUs. Tokens travel to their experts and back.' },
   'replica': { t: 'Replica', d: 'A full copy of the model serving its own share of the requests. Replicas need no communication with each other.' },
   'all-to-all': { t: 'All-to-all', d: 'A collective where every GPU sends a different piece of data to every other GPU. Expert parallelism uses it to route tokens to experts and back.' },
+  'expert': { t: 'Expert', d: 'One of many parallel feed-forward blocks in a mixture-of-experts layer. Each token uses only a few of them.' },
+  'router': { t: 'Router', d: 'A small network that scores every expert for a token and picks the top few. Their outputs are combined using the scores.' },
 };
