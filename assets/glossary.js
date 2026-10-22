@@ -129,4 +129,9 @@ window.GLOSSARY = {
   'scaling law': { t: 'Scaling law', d: 'A fitted formula that predicts a model\u2019s loss from its compute, parameters and training tokens.' },
   'compute-optimal': { t: 'Compute-optimal', d: 'The model size and token count that reach a given loss with the least training compute.' },
   'epoch': { t: 'Epoch', d: 'One full pass over the training data.' },
+  'grpo': { t: 'GRPO', d: 'Group Relative Policy Optimization. The model samples a group of answers per prompt, scores each one and compares every answer with the group average. It needs no separate value model.' },
+  'advantage': { t: 'Advantage', d: 'How much better a sample did than the group. In GRPO it is (reward \u2212 group mean) \u00f7 group standard deviation. Positive advantages are reinforced and negative ones are discouraged.' },
+  'verifiable reward': { t: 'Verifiable reward', d: 'A reward a program can check, such as unit tests passing or a math answer matching. It needs no human rater and no learned judge.' },
+  'reward hacking': { t: 'Reward hacking', d: 'The policy finds a way to earn reward without doing the intended task, such as hard-coding the answers a test expects. It happens when the check is weaker than the goal.' },
+  'pass@k': { t: 'pass@k', d: 'The share of problems solved when you may sample k answers per problem. For a problem solved with chance p per sample it is 1 \u2212 (1 \u2212 p)^k.' },
 };
