@@ -608,3 +608,15 @@ kbd { font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--li
 .starline.on { color: var(--ink); } .starline.on svg { color: var(--y4); fill: var(--y4); }
 .sheet li button .sk { display: inline-grid; place-items: center; color: var(--ink-3); } .sheet li button .sk svg { width: 16px; height: 16px; }
 .sheet li button .sk.won { color: var(--y4); } .sheet li button .sk.won svg { fill: var(--y4); }
+
+/* ---------- pairing game (kit.matcher) ---------- */
+.match { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.match .col { display: grid; gap: 8px; align-content: start; }
+.match .it { position: relative; text-align: left; padding: 10px 12px 10px 42px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 15px; line-height: 1.35; min-height: 58px; cursor: pointer; }
+.match .it:hover { border-color: var(--ctl); }
+.match .it .bd { position: absolute; left: 10px; top: 11px; width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; font: 600 12px/1 var(--font-mono); background: var(--well); color: var(--ink-3); border: 1px solid var(--line); }
+.match .it.sel { border-color: var(--ctl); box-shadow: var(--glow); }
+.match .it.linked .bd { background: var(--ctl); color: var(--on-accent); border-color: var(--ctl); }
+.match .it.ok { border-color: var(--ok); background: var(--ok-soft); } .match .it.ok .bd { background: var(--ok); color: var(--on-ok); border-color: var(--ok); }
+.match .it.no { border-color: var(--bad); background: var(--bad-soft); } .match .it.no .bd { background: var(--bad); color: var(--on-bad); border-color: var(--bad); }
+@media (max-width: 560px) { .match { grid-template-columns: minmax(0, 1fr); } }

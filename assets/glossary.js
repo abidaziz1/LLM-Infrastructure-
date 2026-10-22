@@ -65,4 +65,9 @@ window.GLOSSARY = {
   'distillation': { t: 'Distillation', d: 'Training a faster student model to copy what a slower teacher model produces.' },
   'ddpm': { t: 'DDPM', d: 'Denoising diffusion probabilistic model: the 2020 method that removes noise in about 1,000 small random steps.' },
   'ddim': { t: 'DDIM', d: 'A sampler with no fresh noise in each step, so the same starting noise always gives the same picture. It needs far fewer steps.' },
+  'tubelet': { t: 'Tubelet', d: 'A patch that spans several frames, such as 2 frames × 16 × 16 pixels. It becomes one token.' },
+  'divided attention': { t: 'Divided attention', d: 'Attention split into one step across time at the same position and one step across space inside a frame.' },
+  'aliasing': { t: 'Aliasing', d: 'A false pattern that appears when something is sampled too rarely, such as a wheel that seems to turn backward.' },
+  'tube masking': { t: 'Tube masking', d: 'Hiding the same patch positions in every frame, so a hidden patch cannot be copied from a neighboring frame.' },
+  'dit': { t: 'Diffusion transformer', d: 'A transformer that denoises latent patches. It replaces the U-Net in many image and video generators.' },
 };

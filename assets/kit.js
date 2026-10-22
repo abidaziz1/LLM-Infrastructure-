@@ -83,6 +83,26 @@
         '<rect class="' + cls + '" x="' + x + '" y="' + y + '" width="' + Math.max(2, w * kit.clamp(frac, 0, 1)).toFixed(1) + '" height="' + h + '" rx="' + Math.min(7, h / 2) + '"/>' +
         (value != null ? '<text class="xs m b" x="' + (x + w) + '" y="' + (y - 5) + '" text-anchor="end">' + value + '</text>' : '');
     },
+    /* Click-to-pair game in plain HTML. spec: { left: [text], right: [text], answer: [index into right for each left], order: [display order of right], onChange(state) }.
+       Click an item on the left, then its partner on the right. Click a linked item to unlink it. */
+    matcher(c, spec) {
+      const n = spec.left.length, pair = new Array(n).fill(-1), order = spec.order || spec.right.map((_, i) => i);
+      let sel = -1;
+      const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      const box = c.html('<div class="match"><div class="col">' + spec.left.map((t, i) => '<button type="button" class="it" data-l="' + i + '"><span class="bd"></span>' + esc(t) + '</button>').join('') + '</div><div class="col">' + order.map(j => '<button type="button" class="it" data-r="' + j + '"><span class="bd"></span>' + esc(spec.right[j]) + '</button>').join('') + '</div></div>');
+      const Ls = box.qa('[data-l]'), Rs = box.qa('[data-r]');
+      const state = () => ({ pair: pair.slice(), all: pair.every(v => v >= 0), good: pair.filter((v, i) => v === spec.answer[i]).length });
+      function paint() {
+        const all = pair.every(v => v >= 0);
+        Ls.forEach((b, i) => { b.className = 'it' + (sel === i ? ' sel' : '') + (pair[i] >= 0 ? ' linked' : '') + (all ? (pair[i] === spec.answer[i] ? ' ok' : ' no') : ''); b.querySelector('.bd').textContent = pair[i] >= 0 ? String(i + 1) : ''; });
+        Rs.forEach(b => { const j = +b.dataset.r, i = pair.indexOf(j); b.className = 'it' + (i >= 0 ? ' linked' : '') + (all && i >= 0 ? (pair[i] === spec.answer[i] ? ' ok' : ' no') : ''); b.querySelector('.bd').textContent = i >= 0 ? String(i + 1) : ''; });
+        if (spec.onChange) spec.onChange(state());
+      }
+      Ls.forEach((b, i) => c.on(b, 'click', () => { if (pair[i] >= 0) { pair[i] = -1; sel = -1; } else sel = sel === i ? -1 : i; paint(); }));
+      Rs.forEach(b => c.on(b, 'click', () => { const j = +b.dataset.r, owner = pair.indexOf(j); if (sel >= 0) { if (owner >= 0) pair[owner] = -1; pair[sel] = j; sel = -1; } else if (owner >= 0) pair[owner] = -1; paint(); }));
+      paint();
+      return { reset() { pair.fill(-1); sel = -1; paint(); }, solve() { for (let i = 0; i < n; i++) pair[i] = spec.answer[i]; sel = -1; paint(); }, state };
+    },
     fmt
   };
 
