@@ -141,4 +141,5 @@ window.GLOSSARY = {
   'reward model': { t: 'Reward model', d: 'A model trained on human choices between pairs of answers. It scores an answer, and the chatbot is then trained to raise that score.' },
   'kl penalty': { t: 'KL penalty', d: 'A term subtracted from the reward in proportion to how far the policy has drifted from its starting model. It limits how hard the policy can push on a flawed reward.' },
   'specification gaming': { t: 'Specification gaming', d: 'Earning reward through a loophole in how the goal was written, instead of doing what was meant.' },
+  'sandbox': { t: 'Sandbox', d: 'An isolated environment where code or a model runs with limited access to files and the network, so a mistake or an attack stays inside.' },
 };
